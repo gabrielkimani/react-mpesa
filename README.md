@@ -24,6 +24,7 @@ class Example extends Component {
   }
 }
 ```
+>a test example
 
 ## License
 
