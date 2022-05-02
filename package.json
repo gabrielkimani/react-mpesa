@@ -1,6 +1,6 @@
 {
   "name": "react-mpesa-stk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": " A simple react component for 2bc payments through stk push",
   "author": "gabrielkimani",
   "license": "MIT",
@@ -26,7 +26,6 @@
   "peerDependencies": {
     "react": "^16.0.0",
     "prop-types": "^15.8.1"
-
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.10",
