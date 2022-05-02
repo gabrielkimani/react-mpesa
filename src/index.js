@@ -1,6 +1,146 @@
-import React from 'react'
+import React ,{useEffect,useState}from 'react'
 import styles from './styles.module.css'
+import PropTypes from 'prop-types'
 
-export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Example Component: {text}</div>
+
+export const MpesaStk = (props) => {
+  const {
+    title,
+    number,
+    shortcode,
+    passkey,
+    transactionType,
+    businessShortcode,
+    amount,
+    callbackUrl,
+    accountReference,
+    transactionDesc,
+    mpesaAuth,
+    environment,
+  } = props.credentials;
+
+  const { onPaySuccess = () =>{}, onPayError = () => {} } = props;
+
+  const [phoneNumber, setPhoneNumber] = useState(number)
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState({})
+  const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('');
+
+  //submit the info
+  const submitHandler = async () => {
+    const data = {
+      shortcode,
+      passkey,
+      transactionType,
+      businessShortcode,
+      amount,
+      phoneNumber,
+      callbackUrl,
+      accountReference,
+      transactionDesc,
+      mpesaAuth,
+      environment
+    }
+if(shortcode === undefined || passkey === undefined || transactionType === undefined || businessShortcode === undefined || amount === undefined || phoneNumber === undefined || callbackUrl === undefined || accountReference === undefined || transactionDesc === undefined || mpesaAuth === undefined || environment === undefined){
+  setError(true)
+  setErrorMessage('Please provide all the required credentials!');
+}
+
+    setLoading(true);
+    fetch('https://mpesa-server.herokuapp.com/sendmoney', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(false)
+        if (data.errorMessage) {
+          console.log(data.errorMessage)
+          setError(true)
+          setErrorMessage(data.errorMessage)
+        } else {
+          console.log({ message: 'success', data })
+          setData(data)
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+        setError(true)
+        setErrorMessage(error.message)
+      })
+  }
+
+ MpesaStk.propTypes = {
+    credentials: PropTypes.object,
+    onPaySuccess: PropTypes.func,
+    onPayError: PropTypes.func
+  }
+  
+ MpesaStk.defaultProps = {
+    credentials: {},
+    onPaySuccess: () => {},
+    onPayError: () => {},
+    amount:0,
+    title:'Order payment',
+  }
+
+  useEffect(() => {
+    if (data.CustomerMessage) {
+      onPaySuccess(data)
+    }
+    if (errorMessage) {
+      onPayError({message:errorMessage})
+    }
+    return () => {
+      
+    }
+  }, [data, error])
+
+
+  return (
+    <div>
+    {data.CustomerMessage ? (
+      <div className={styles.success_wrapper}>
+        <div className={styles.success_header}>
+          Success!
+        </div>
+        <p>Successful!{data.CustomerMessage}</p>
+      </div>
+    ) : (
+      <div
+        className={
+          !loading
+            ? `${styles.mpesa_wrapper}`
+            : `${styles.wrap} ${styles.mpesa_wrapper}`
+        }
+      >
+        <div className={styles.inner_wrapper}>
+          {loading && <div className={styles.loader}></div>}
+          <span className={styles.pay_title}>Pay with Mpesa</span>
+          <span className='title'>Payment details :{title}</span>
+          <span className={styles.amount}>Amount: KES {amount}</span>
+          <span className={styles.number}>Mpesa number: {phoneNumber}</span>
+          <span className={styles.number_input}>
+            <input
+              type='text'
+              placeholder='254xxxxxxxx'
+              className={styles.input}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          </span>
+          <span className={styles.button}>
+            <button className={styles.button_wrapper} onClick={submitHandler} disabled={loading}>
+              <span>Pay Now</span>
+            </button>
+          </span>
+        </div>
+      </div>
+    )}
+  </div>
+  )
 }

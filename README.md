@@ -13,18 +13,51 @@ npm install --save react-mpesa-stk
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
 
-import MyComponent from 'react-mpesa-stk'
+import { MpesaStk } from 'mpesa-react-button'
+
+//load the styles
 import 'react-mpesa-stk/dist/index.css'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
+const credentials = {
+  title: '', //eg. 'Pay for your order'
+  number: '',
+  shortcode: '', //eg 174379---obtained from M-Pesa daraja portal
+  passkey: '', //obtained from mpesa daraja portal
+  transactionType: '', //eg. CustomerPayBillOnline
+  businessShortcode: '', //eg 174379
+  amount: '', //Amount to be paid by the customer eg. 100
+  phone: '', //Phone number of the customer eg. 254712345000
+  callbackUrl: '', //Callback url to be called after payment
+  accountReference: '', //Account reference eg. order number
+  transactionDesc: '', //Transaction description eg. Order for pizza
+  mpesaAuth: '', //Mpesa auth token obtained from mpesa daraja portal
+  environment: '' //environment to be used eg. sandbox or production--you can use sandbox for testing
 }
+
+const App = () => {
+  const onSendSuccess = (data) => {
+    //handle success
+    console.log(data)
+  }
+
+  const handleError = (error) => {
+    //handle error
+    console.log(error)
+  }
+  return (
+    <MpesaButton
+      credentials={credentials} //credentials object
+      onPaySuccess={onSendSuccess} //returned afer a successful payment
+      onPayError={handleError} //returned after a failed payment
+    />
+  )
+}
+
+export default App
 ```
->a test example
+
 
 ## License
 
