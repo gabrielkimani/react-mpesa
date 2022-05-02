@@ -15,7 +15,7 @@ npm install --save react-mpesa-stk
 ```jsx
 import React from 'react'
 
-import { MpesaStk } from 'mpesa-react-button'
+import { MpesaStk } from 'react-mpesa-stk'
 
 //load the styles
 import 'react-mpesa-stk/dist/index.css'
