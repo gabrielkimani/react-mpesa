@@ -37,7 +37,7 @@ const credentials = {
 }
 
 const App = () => {
-  const onSendSuccess = (data) => {
+  const handleSuccess = (data) => {
     //handle success
     console.log(data)
   }
@@ -47,9 +47,9 @@ const App = () => {
     console.log(error)
   }
   return (
-    <MpesaButton
+    <MpesaStk
       credentials={credentials} //credentials object
-      onPaySuccess={onSendSuccess} //returned afer a successful payment
+      onPaySuccess={handleSuccess} //returned afer a successful payment
       onPayError={handleError} //returned after a failed payment
     />
   )
